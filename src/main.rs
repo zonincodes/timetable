@@ -52,8 +52,8 @@ fn parse_time<'a>(time: &String) -> Vec<u32> {
 
 
 
-fn _parse_locale(locale: &String) -> bool {
-    if locale == "pm" || locale == "am" {
+fn parse_locale(locale: &String) -> bool {
+    if locale.to_lowercase() == "pm" || locale.to_lowercase() == "am" {
         true
     } else {
         false
@@ -168,7 +168,7 @@ fn time_of_day(x: usize) -> String {
 
 #[cfg(test)]
 mod test {
-    use crate::parse_time;
+    use crate::{parse_locale, parse_time};
 
     #[test]
     fn parse_time_test() {
@@ -177,7 +177,13 @@ mod test {
         assert_eq!(parse_time(&time), [1, 30])
     }
 
+    #[test]
     fn test_locale () {
+        let locale = String::from("am");
+        let locale_1 = String::from("PM");
+
+        assert_eq!(true, parse_locale(&locale));
+        assert_eq!(true, parse_locale(&locale_1));
         
     }
 }
