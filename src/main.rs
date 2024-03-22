@@ -42,9 +42,15 @@ fn _parse_start_end(
 ) -> bool {
     todo!()
 }
-fn _parse_time(_event: Vec<String>) -> Vec<u32> {
-    todo!()
+
+fn parse_time<'a>(time: &String) -> Vec<u32> {
+    
+    let time: Vec<&str> = time.split(":").to_owned().collect();
+    let time: Vec<u32> =time.into_iter().map(|x| x.parse::<u32>().unwrap()).collect();
+    time
 }
+
+
 
 fn _parse_locale(locale: &String) -> bool {
     if locale == "pm" || locale == "am" {
@@ -82,10 +88,6 @@ fn print_instructions() {
     println!("4>> Delete Event");
 }
 
-// Takes user inputs and returns a vector
-fn _user_inputs(_vec: &Vec<[[&str; 5]; 8]>) -> Result<Vec<String>, Error> {
-    todo!()
-}
 
 // Takes user inputs and modifys or creates new event
 fn _modify() {}
@@ -161,4 +163,21 @@ fn time_of_day(x: usize) -> String {
     ];
 
     time_day[x].to_string()
+}
+
+
+#[cfg(test)]
+mod test {
+    use crate::parse_time;
+
+    #[test]
+    fn parse_time_test() {
+        let time = String::from("1:30");
+        
+        assert_eq!(parse_time(&time), [1, 30])
+    }
+
+    fn test_locale () {
+        
+    }
 }
