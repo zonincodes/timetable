@@ -1,4 +1,4 @@
-use std::{fmt::Error, io, vec};
+use std::{io, vec};
 
 fn main() {
     let time_table: Vec<[[&str; 5]; 8]> = vec![[["  "; 5]; 8]; 7];
@@ -43,16 +43,16 @@ fn _parse_start_end(
     todo!()
 }
 
-fn parse_time<'a>(time: &String) -> Vec<u32> {
-    
+fn _parse_time<'a>(time: &String) -> Vec<u32> {
     let time: Vec<&str> = time.split(":").to_owned().collect();
-    let time: Vec<u32> =time.into_iter().map(|x| x.parse::<u32>().unwrap()).collect();
+    let time: Vec<u32> = time
+        .into_iter()
+        .map(|x| x.parse::<u32>().unwrap())
+        .collect();
     time
 }
 
-
-
-fn parse_locale(locale: &String) -> bool {
+fn _parse_locale(locale: &String) -> bool {
     if locale.to_lowercase() == "pm" || locale.to_lowercase() == "am" {
         true
     } else {
@@ -88,7 +88,6 @@ fn print_instructions() {
     println!("4>> Delete Event");
 }
 
-
 // Takes user inputs and modifys or creates new event
 fn _modify() {}
 
@@ -119,7 +118,7 @@ fn print_format(vec: &Vec<[[&str; 5]; 8]>) {
         sat = days_of_week[6],
     );
     println!("{string:->100}");
-   
+
     for i in 0..8 {
         for z in 0..3 {
             let mut string: String = String::from("");
@@ -141,11 +140,13 @@ fn print_format(vec: &Vec<[[&str; 5]; 8]>) {
                     string.push_str(&str);
                     string.push_str(" | ");
                 } else if z == 1 {
-                    let str: String = format!("{str:>8}{b}", str = vec[x][i][z], b = vec[x][i][z + 1]);
+                    let str: String =
+                        format!("{str:>8}{b}", str = vec[x][i][z], b = vec[x][i][z + 1]);
                     string.push_str(&str);
                     string.push_str(" | ");
                 } else {
-                    let str: String = format!("{str:>8}{b}", str = vec[x][i][z + 1], b = vec[x][i][z + 2]);
+                    let str: String =
+                        format!("{str:>8}{b}", str = vec[x][i][z + 1], b = vec[x][i][z + 2]);
                     string.push_str(&str);
                     string.push_str(" | ");
                 }
@@ -165,25 +166,34 @@ fn time_of_day(x: usize) -> String {
     time_day[x].to_string()
 }
 
-
 #[cfg(test)]
 mod test {
-    use crate::{parse_locale, parse_time};
+    use crate::{_parse_title, _parse_locale, _parse_time};
 
     #[test]
     fn parse_time_test() {
         let time = String::from("1:30");
-        
-        assert_eq!(parse_time(&time), [1, 30])
+
+        assert_eq!(_parse_time(&time), [1, 30])
     }
 
     #[test]
-    fn test_locale () {
+    fn test_locale() {
         let locale = String::from("am");
         let locale_1 = String::from("PM");
 
-        assert_eq!(true, parse_locale(&locale));
-        assert_eq!(true, parse_locale(&locale_1));
-        
+        assert_eq!(true, _parse_locale(&locale));
+        assert_eq!(true, _parse_locale(&locale_1));
+    }
+
+    #[test]
+    fn test_title() {
+        let title: String = "".to_string();
+        let title_1: String = "Hello".to_string();
+        let title_2: String = "Wue".to_string();
+
+        assert_eq!(false, _parse_title(&title));
+        assert_eq!(true, _parse_title(&title_1));
+        assert_eq!(true, _parse_title(&title_2));
     }
 }
