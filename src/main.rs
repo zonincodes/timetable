@@ -43,13 +43,14 @@ fn _parse_start_end(
     todo!()
 }
 
-fn _parse_time<'a>(time: &String) -> Vec<u32> {
+fn _parse_time<'a>(time: &String) -> Option<Vec<u32>> {
     let time: Vec<&str> = time.split(":").to_owned().collect();
     let time: Vec<u32> = time
         .into_iter()
         .map(|x| x.parse::<u32>().unwrap())
         .collect();
-    time
+
+   Some(time)
 }
 
 fn _parse_locale(locale: &String) -> bool {
@@ -70,6 +71,8 @@ fn _parse_title(title: &String) -> bool {
 
 // Get input from the user and sanitizes
 fn get_input(detail: &str) -> String {
+
+    
     let mut input: String = String::new();
     println!("{detail}");
     io::stdin()
@@ -168,13 +171,13 @@ fn time_of_day(x: usize) -> String {
 
 #[cfg(test)]
 mod test {
-    use crate::{_parse_title, _parse_locale, _parse_time};
+    use crate::{_parse_locale, _parse_time, _parse_title};
 
     #[test]
     fn parse_time_test() {
-        let time = String::from("1:30");
+        let time = String::from("01:30");
 
-        assert_eq!(_parse_time(&time), [1, 30])
+        assert_eq!(_parse_time(&time), Some(vec![1, 30]))
     }
 
     #[test]
