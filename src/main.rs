@@ -1,33 +1,52 @@
 use std::{io, vec};
 
 fn main() {
-    let time_table: Vec<[[&str; 5]; 8]> = vec![[["  "; 5]; 8]; 7];
     print_instructions();
-    get_event_shedule();
+    // get_event_shedule();
+    let event = Event::new();
+    let time_table: Vec<[&Event; 8]> = vec![[&event; 8]; 7];
+
     print_format(&time_table)
 }
 
-// Takes user inputs and returns a vector
-fn get_event_shedule() {
-    // Vector containing an event
-    let mut event_details: Vec<String> = vec![];
+#[derive(Debug, Clone)]
+pub struct Event {
+    day: String,
+    title: String,
+    start: String,
+    start_locale: String,
+    end: String,
+    end_locale: String,
+}
 
-    let input: String = get_input("Enter Event Title: More than 3 Letters");
-    event_details.push(input);
+impl Event {
+    // Takes user inputs and returns a vector
+    fn get_event_shedule(&mut self) {
+        // Vector containing an event
+        let input: String = get_input("Enter Day Of Week: More than 3 Letters");
+        self.day = input;
+        let input: String = get_input("Enter Event Title: More than 3 Letters");
+        self.title = input;
+        let input: String = get_input("Enter Start time! format: 1:20");
+        self.start = input;
+        let input: String = get_input("Enter Locale: am/pm");
+        self.start_locale = input;
+        let input: String = get_input("Enter End time! format: 1:20");
+        self.end = input;
+        let input: String = get_input("Enter Locale `pm`");
+        self.end_locale = input;
+    }
 
-    let input: String = get_input("Enter Start time! format: 1:20");
-    event_details.push(input);
-
-    let input: String = get_input("Enter Locale: am/pm");
-    event_details.push(input);
-
-    let input: String = get_input("Enter End time! format: 1:20");
-    event_details.push(input);
-
-    let input: String = get_input("Enter Locale `pm`");
-    event_details.push(input);
-
-    println!("{:#?}", event_details)
+    fn new() -> Self {
+        Event {
+            day: "  ".to_string(),
+            title: "foxyLowProxy".to_string(),
+            start: "  ".to_string(),
+            start_locale: "  ".to_string(),
+            end: "  ".to_string(),
+            end_locale: "  ".to_string(),
+        }
+    }
 }
 
 fn _validate_event(_event: &Vec<String>) -> bool {
@@ -50,7 +69,7 @@ fn _parse_time<'a>(time: &String) -> Option<Vec<u32>> {
         .map(|x| x.parse::<u32>().unwrap())
         .collect();
 
-   Some(time)
+    Some(time)
 }
 
 fn _parse_locale(locale: &String) -> bool {
@@ -71,8 +90,6 @@ fn _parse_title(title: &String) -> bool {
 
 // Get input from the user and sanitizes
 fn get_input(detail: &str) -> String {
-
-    
     let mut input: String = String::new();
     println!("{detail}");
     io::stdin()
@@ -89,13 +106,14 @@ fn print_instructions() {
     println!("2>> Schedule Event");
     println!("3>> Update Event");
     println!("4>> Delete Event");
+    println!("5>> Print Instructions");
 }
 
 // Takes user inputs and modifys or creates new event
 fn _modify() {}
 
 // Formats the output of the timetable
-fn print_format(vec: &Vec<[[&str; 5]; 8]>) {
+fn print_format(vec: &Vec<[&Event; 8]>) {
     let string: &str = "-";
     println!("{string:->100}");
 
@@ -135,21 +153,27 @@ fn print_format(vec: &Vec<[[&str; 5]; 8]>) {
                     string.push_str("|")
                 }
                 if z == 0 {
-                    let mut my_str: String = vec[x][i][z].to_string();
-                    if my_str.len() > 7 {
-                        my_str = format!("{}...", &my_str[..7])
+                    if vec[x][i].title.len() > 7 {
+                        let my_str = format!("{}...", &vec[x][i].title[..7]);
+                        let str = format!("{str:>10}", str = my_str);
+                        string.push_str(&str);
+                        string.push_str(" | ");
+                    } else {
+                        let str = format!("{str:>10}", str = &vec[x][i].title);
+                        string.push_str(&str);
+                        string.push_str(" | ");
                     }
-                    let str = format!("{str:>10}", str = my_str);
-                    string.push_str(&str);
-                    string.push_str(" | ");
                 } else if z == 1 {
-                    let str: String =
-                        format!("{str:>8}{b}", str = vec[x][i][z], b = vec[x][i][z + 1]);
+                    let str: String = format!(
+                        "{str:>8}{b}",
+                        str = vec[x][i].start,
+                        b = vec[x][i].start_locale
+                    );
                     string.push_str(&str);
                     string.push_str(" | ");
                 } else {
                     let str: String =
-                        format!("{str:>8}{b}", str = vec[x][i][z + 1], b = vec[x][i][z + 2]);
+                        format!("{str:>8}{b}", str = vec[x][i].end, b = vec[x][i].end_locale);
                     string.push_str(&str);
                     string.push_str(" | ");
                 }
