@@ -1,12 +1,10 @@
 use std::{io, vec};
 
-fn main() {
-    print_instructions();
-    // get_event_shedule();
-    let event = Event::new();
-    let time_table: Vec<[&Event; 8]> = vec![[&event; 8]; 7];
-
-    print_format(&time_table)
+enum Validate {
+    Day,
+    Title,
+    Time,
+    Locale,
 }
 
 #[derive(Debug, Clone)]
@@ -17,23 +15,24 @@ pub struct Event {
     start_locale: String,
     end: String,
     end_locale: String,
+    is_valid: bool,
 }
 
 impl Event {
     // Takes user inputs and returns a vector
     fn get_event_shedule(&mut self) {
         // Vector containing an event
-        let input: String = get_input("Enter Day Of Week: More than 3 Letters");
+        let input: String = get_input("Enter Day Of Week: More than 3 Letters", Validate::Day);
         self.day = input;
-        let input: String = get_input("Enter Event Title: More than 3 Letters");
+        let input: String = get_input("Enter Event Title: More than 3 Letters", Validate::Title);
         self.title = input;
-        let input: String = get_input("Enter Start time! format: 1:20");
+        let input: String = get_input("Enter Start time! format: 1:00", Validate::Time);
         self.start = input;
-        let input: String = get_input("Enter Locale: am/pm");
+        let input: String = get_input("Enter Locale: am/pm", Validate::Locale);
         self.start_locale = input;
-        let input: String = get_input("Enter End time! format: 1:20");
+        let input: String = get_input("Enter End time! format: 2:00", Validate::Time);
         self.end = input;
-        let input: String = get_input("Enter Locale `pm`");
+        let input: String = get_input("Enter Locale pm", Validate::Locale);
         self.end_locale = input;
     }
 
@@ -45,21 +44,46 @@ impl Event {
             start_locale: "  ".to_string(),
             end: "  ".to_string(),
             end_locale: "  ".to_string(),
+            is_valid: false,
         }
+    }
+
+    fn validate(&mut self) {
+        self.is_valid = true;
     }
 }
 
-fn _validate_event(_event: &Vec<String>) -> bool {
+fn _validate_event(_event: &Event) -> bool {
+    if !_parse_locale(&_event.end_locale) || !_parse_locale(&_event.start_locale) {
+        return false;
+    }
+
+    // if
     todo!()
 }
 
-fn _parse_start_end(
-    _start: &Vec<u32>,
-    _end: &Vec<u32>,
-    _start_locale: &String,
-    _end_locale: &String,
-) -> bool {
-    todo!()
+
+
+fn _parse_start_end(event: &Event) -> bool {
+    let start = _parse_time(&event.start).unwrap();
+    let end = _parse_time(&event.end).unwrap();
+
+    if event.start_locale.to_lowercase() == "pm" && event.end_locale.to_lowercase() == "am" {
+        return false;
+    }
+
+    let start_time_in_min = calculate_min_into_day(&start);
+    let end_time_in_min = calculate_min_into_day(&end);
+    if (end_time_in_min - start_time_in_min) > 60 {
+        return false;
+    }
+
+    true
+    // todo!()
+}
+
+fn calculate_min_into_day(time: &Vec<u32>) -> u32 {
+    time[0] * 60 + time[1]
 }
 
 fn _parse_time<'a>(time: &String) -> Option<Vec<u32>> {
@@ -89,13 +113,56 @@ fn _parse_title(title: &String) -> bool {
 }
 
 // Get input from the user and sanitizes
-fn get_input(detail: &str) -> String {
-    let mut input: String = String::new();
-    println!("{detail}");
-    io::stdin()
-        .read_line(&mut input)
-        .expect("Failed to read line");
-    input.trim().to_string()
+fn get_input(detail: &str, validate: Validate) -> String {
+    loop {
+        let mut input: String = String::new();
+
+        println!("{detail}");
+        io::stdin()
+            .read_line(&mut input)
+            .expect("Failed to read line");
+
+        match validate {
+            Validate::Day => {
+                if _parse_title(&input) {
+                    break input.trim().to_string();
+                } else {
+                    println!("Wrong Day, enter correct day");
+                    continue;
+                }
+            }
+            Validate::Locale => {
+                if _parse_locale(&input) {
+                    break input.trim().to_string();
+                } else {
+                    println!("Wrong Locale, enter correctly AM/PM");
+                    continue;
+                }
+            }
+
+            Validate::Title => {
+                if _parse_title(&input) {
+                    break input.trim().to_string();
+                } else {
+                    println!("Title Length too short");
+                    continue;
+                }
+            }
+
+            Validate::Time => {
+                let time = _parse_time(&input);
+                match time {
+                    Some(_) => break input.trim().to_string(),
+                    None => {
+                        println!("That date ain't right");
+                    continue;
+                    },
+                }
+            }
+        }
+
+        // break input.trim().to_string();
+    }
 }
 
 // Prints the instructions to the console
@@ -191,6 +258,16 @@ fn time_of_day(x: usize) -> String {
     ];
 
     time_day[x].to_string()
+}
+
+
+fn main() {
+    print_instructions();
+    // get_event_shedule();
+    let event = Event::new();
+    let time_table: Vec<[&Event; 8]> = vec![[&event; 8]; 7];
+
+    print_format(&time_table)
 }
 
 #[cfg(test)]
