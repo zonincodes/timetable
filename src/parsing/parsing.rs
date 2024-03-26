@@ -1,7 +1,3 @@
-// use crate::objects::objects::objects::Event;
-
-use std::num::{IntErrorKind, ParseIntError};
-
 use crate::objects::objects::{CustomError, Event};
 
 pub fn _parse_start_end(event: &Event) -> bool {
@@ -33,19 +29,15 @@ pub fn calculate_min_into_day(time: &Vec<i32>) -> i32 {
 pub fn _parse_time<'a>(time: &String) -> Result<Vec<i32>, CustomError> {
     let time: Vec<&str> = time.split(":").to_owned().collect();
     println!("{:?}", time);
-    // let time = time
-    //     .into_iter()
-    //     .map(|x| x.parse::<u32>().expect("Parse error"))
-    //     .collect();
-
+   
     let hour: i32 = match time[0].parse::<i32>() {
         Ok(val)  => val,
-        Err(e) => return Err(CustomError::ParseInt),
+        Err(_) => return Err(CustomError::ParseInt),
     };
 
     let min: i32 = match time[1].parse::<i32>() {
         Ok(val) => val,
-        Err(e) => return Err(CustomError::ParseInt),
+        Err(_) => return Err(CustomError::ParseInt),
     }; 
 
     if hour < 13 && min < 60 {
