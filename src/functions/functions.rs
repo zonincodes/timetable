@@ -15,7 +15,7 @@ pub fn get_input(detail: &str, validate: Validate) -> String {
         io::stdin()
             .read_line(&mut input)
             .expect("Failed to read line");
-        input.trim().to_string();
+        let input = input.trim().to_string();
         match validate {
             Validate::Day => {
                 if _parse_title(&input) {
@@ -46,8 +46,8 @@ pub fn get_input(detail: &str, validate: Validate) -> String {
             Validate::Time => {
                 let time = _parse_time(&input);
                 match time {
-                    Some(_) => break input,
-                    None => {
+                    Ok(_)=> break input,
+                    Err(_) => {
                         println!("That date ain't right");
                         continue;
                     }

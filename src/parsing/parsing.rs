@@ -1,6 +1,8 @@
 // use crate::objects::objects::objects::Event;
 
-use crate::objects::objects::Event;
+use std::num::{IntErrorKind, ParseIntError};
+
+use crate::objects::objects::{CustomError, Event};
 
 pub fn _parse_start_end(event: &Event) -> bool {
     let start = _parse_time(&event.start).unwrap();
@@ -20,18 +22,37 @@ pub fn _parse_start_end(event: &Event) -> bool {
     // todo!()
 }
 
-pub fn calculate_min_into_day(time: &Vec<u32>) -> u32 {
+pub fn calculate_min_into_day(time: &Vec<i32>) -> i32 {
     time[0] * 60 + time[1]
 }
 
-pub fn _parse_time<'a>(time: &String) -> Option<Vec<u32>> {
+
+
+
+// Check if the user input for time ia velid 
+pub fn _parse_time<'a>(time: &String) -> Result<Vec<i32>, CustomError> {
     let time: Vec<&str> = time.split(":").to_owned().collect();
     println!("{:?}", time);
-    let time = time
-        .into_iter()
-        .map(|x| x.parse::<u32>().unwrap())
-        .collect();
-    Some(time)
+    // let time = time
+    //     .into_iter()
+    //     .map(|x| x.parse::<u32>().expect("Parse error"))
+    //     .collect();
+
+    let hour: i32 = match time[0].parse::<i32>() {
+        Ok(val)  => val,
+        Err(e) => return Err(CustomError::ParseInt),
+    };
+
+    let min: i32 = match time[1].parse::<i32>() {
+        Ok(val) => val,
+        Err(e) => return Err(CustomError::ParseInt),
+    }; 
+
+    if hour < 13 && min < 60 {
+        Ok(vec![hour, min])
+    } else {
+        Err(CustomError::ParseInt)
+    }
 }
 
 pub fn _parse_locale(locale: &String) -> bool {
@@ -78,6 +99,6 @@ mod test {
     fn parse_time_test() {
         let time = String::from("01:30");
 
-        assert_eq!(_parse_time(&time), Some(vec![1, 30]))
+        assert_eq!(_parse_time(&time), Ok(vec![1, 30]))
     }
 }

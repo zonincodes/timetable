@@ -52,3 +52,9 @@ impl Event {
         self.is_valid = true;
     }
 }
+
+
+#[derive(PartialEq, Debug)]
+pub enum CustomError {
+    ParseInt
+}
