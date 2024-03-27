@@ -3,8 +3,7 @@
 use std::io;
 
 use crate::{
-    objects::objects::{Event, Validate},
-    parsing::parsing::{_parse_time, _parse_title},
+     objects::objects::{Event, Validate}, parsing::parsing::{_parse_time, _parse_title}
 };
 
 pub fn get_input(detail: &str, validate: Validate) -> String {
@@ -16,6 +15,7 @@ pub fn get_input(detail: &str, validate: Validate) -> String {
             .read_line(&mut input)
             .expect("Failed to read line");
         let input = input.trim().to_string();
+        
         match validate {
             Validate::Day => {
                 if _parse_title(&input) {
@@ -30,7 +30,7 @@ pub fn get_input(detail: &str, validate: Validate) -> String {
                 if _parse_title(&input) {
                     break input;
                 } else {
-                    println!("Title Length too short");
+                    println!("Title Length` too short");
                     continue;
                 }
             }
@@ -40,7 +40,7 @@ pub fn get_input(detail: &str, validate: Validate) -> String {
                 match time {
                     Ok(_) => break input,
                     Err(_) => {
-                        println!("That date ain't right");
+                        println!("That format ain't right");
                         continue;
                     }
                 }
@@ -129,6 +129,7 @@ pub fn print_format(vec: &Vec<[&Event; 8]>) {
         }
         println!("{string:->100}");
     }
+
 }
 
 

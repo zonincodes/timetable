@@ -1,4 +1,7 @@
-use crate::{errors::errors::{CustomParseError, ParseTime}, objects::objects::Event};
+use crate::{
+    errors::errors::{CustomParseError, ParseTime},
+    objects::objects::Event
+};
 
 pub fn _parse_start_end(event: &Event) -> bool {
     let start = _parse_time(&event.start).unwrap();
@@ -22,29 +25,40 @@ pub fn calculate_min_into_day(time: &Vec<i32>) -> i32 {
     time[0] * 60 + time[1]
 }
 
-
-
-
-// Check if the user input for time ia velid 
+// Check if the user input for time ia velid
 pub fn _parse_time<'a>(time: &String) -> Result<Vec<i32>, CustomParseError> {
-
-    if time.len() != 6 {
+    if time.len() != 7 {
         return Err(CustomParseError::ParseInt);
     }
-    let time: Vec<&str> = time.split(":").to_owned().collect();
-    println!("{:?}", time);
-   
-    let hour: i32 = match time[0].parse::<i32>() {
-        Ok(val)  => val,
-        Err(_) => return Err(CustomParseError::ParseTime(ParseTime::ParseHour(String::from("Wrong hour input")))),
+    let local_time = &time[..5];
+    println!("{:#?}", local_time);
+    let local_time: Vec<&str> = local_time.split(":").to_owned().collect();
+
+    let hour: i32 = match local_time[0].parse::<i32>() {
+        Ok(val) => val,
+        Err(_) => {
+            return Err(CustomParseError::ParseTime(ParseTime::ParseHour(
+                String::from("Wrong hour input"),
+            )))
+        }
     };
 
-    let min: i32 = match time[1].parse::<i32>() {
+    let min: i32 = match local_time[1].parse::<i32>() {
         Ok(val) => val,
-        Err(_) => return Err(CustomParseError::ParseTime(ParseTime::ParseMin("Wrong min".into()))),
-    }; 
+        Err(_) => {
+            return Err(CustomParseError::ParseTime(ParseTime::ParseMin(
+                "Wrong min".into(),
+            )))
+        }
+    };
+    let locale = &time[5..].into();
+    println!("Locale {}", locale);
+    if !_parse_locale(&locale) {
+        return Err(CustomParseError::ParseTime(ParseTime::ParseLocale));
+    };
 
     if hour < 13 && min < 60 {
+
         Ok(vec![hour, min])
     } else {
         Err(CustomParseError::ParseInt)
