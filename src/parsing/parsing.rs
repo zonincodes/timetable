@@ -1,4 +1,4 @@
-use crate::objects::objects::{CustomError, Event};
+use crate::{errors::errors::{CustomParseError, ParseTime}, objects::objects::Event};
 
 pub fn _parse_start_end(event: &Event) -> bool {
     let start = _parse_time(&event.start).unwrap();
@@ -26,24 +26,28 @@ pub fn calculate_min_into_day(time: &Vec<i32>) -> i32 {
 
 
 // Check if the user input for time ia velid 
-pub fn _parse_time<'a>(time: &String) -> Result<Vec<i32>, CustomError> {
+pub fn _parse_time<'a>(time: &String) -> Result<Vec<i32>, CustomParseError> {
+
+    if time.len() != 6 {
+        return Err(CustomParseError::ParseInt);
+    }
     let time: Vec<&str> = time.split(":").to_owned().collect();
     println!("{:?}", time);
    
     let hour: i32 = match time[0].parse::<i32>() {
         Ok(val)  => val,
-        Err(_) => return Err(CustomError::ParseInt),
+        Err(_) => return Err(CustomParseError::ParseTime(ParseTime::ParseHour(String::from("Wrong hour input")))),
     };
 
     let min: i32 = match time[1].parse::<i32>() {
         Ok(val) => val,
-        Err(_) => return Err(CustomError::ParseInt),
+        Err(_) => return Err(CustomParseError::ParseTime(ParseTime::ParseMin("Wrong min".into()))),
     }; 
 
     if hour < 13 && min < 60 {
         Ok(vec![hour, min])
     } else {
-        Err(CustomError::ParseInt)
+        Err(CustomParseError::ParseInt)
     }
 }
 

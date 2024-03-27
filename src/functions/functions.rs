@@ -4,7 +4,7 @@ use std::io;
 
 use crate::{
     objects::objects::{Event, Validate},
-    parsing::parsing::{_parse_locale, _parse_time, _parse_title},
+    parsing::parsing::{_parse_time, _parse_title},
 };
 
 pub fn get_input(detail: &str, validate: Validate) -> String {
@@ -25,15 +25,7 @@ pub fn get_input(detail: &str, validate: Validate) -> String {
                     continue;
                 }
             }
-            Validate::Locale => {
-                if _parse_locale(&input) == true {
-                    break input;
-                } else {
-                    println!("Wrong Locale, enter correctly AM/PM");
-                    continue;
-                }
-            }
-
+           
             Validate::Title => {
                 if _parse_title(&input) {
                     break input;
@@ -57,15 +49,7 @@ pub fn get_input(detail: &str, validate: Validate) -> String {
     }
 }
 
-pub fn print_instructions() {
-    println!("## MENU ##");
-    println!("Choose option");
-    println!("1>> Show Time Table");
-    println!("2>> Schedule Event");
-    println!("3>> Update Event");
-    println!("4>> Delete Event");
-    println!("5>> Print Instructions");
-}
+
 
 // Takes user inputs and modifys or creates new event
 fn _modify() {}
@@ -162,7 +146,6 @@ fn time_of_day(x: usize) -> String {
 mod test {
     use std::io::{self, Cursor};
 
-    use crate::{functions::functions::get_input, objects::objects::Validate};
 
     #[test]
     #[ignore] // test doesnt work
@@ -172,9 +155,7 @@ mod test {
 
         // swap the actual stdin with mock input
         let _ = std::mem::swap(&mut io::stdin(), &mut mock_stdin);
-        let input = get_input("Hello", Validate::Locale);
 
-        assert_eq!("pm".to_string(), input);
 
         // restore the actual stdIn
         let _ = std::mem::swap(&mut io::stdin(), &mut mock_stdin);

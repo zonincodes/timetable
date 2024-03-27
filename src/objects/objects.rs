@@ -1,10 +1,10 @@
 use crate::functions::functions::get_input;
 
+
 pub enum Validate {
     Day,
     Title,
     Time,
-    Locale,
 }
 
 #[derive(Debug, Clone)]
@@ -26,14 +26,11 @@ impl Event {
         self.day = input;
         let input: String = get_input("Enter Event Title: More than 3 Letters", Validate::Title);
         self.title = input;
-        let input: String = get_input("Enter Start time! format: 1:00", Validate::Time);
+        let input: String = get_input("Enter Start time! format: 01:00PM", Validate::Time);
         self.start = input;
-        let input: String = get_input("Enter Locale: am/pm", Validate::Locale);
-        self.start_locale = input;
-        let input: String = get_input("Enter End time! format: 2:00", Validate::Time);
+        let input: String = get_input("Enter End time! format: 02:00PM", Validate::Time);
         self.end = input;
-        let input: String = get_input("Enter Locale pm", Validate::Locale);
-        self.end_locale = input;
+        
     }
 
     pub fn new() -> Self {
@@ -54,7 +51,4 @@ impl Event {
 }
 
 
-#[derive(PartialEq, Debug)]
-pub enum CustomError {
-    ParseInt
-}
+
