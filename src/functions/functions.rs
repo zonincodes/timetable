@@ -46,7 +46,7 @@ pub fn get_input(detail: &str, validate: Validate) -> String {
             Validate::Time => {
                 let time = _parse_time(&input);
                 match time {
-                    Ok(_)=> break input,
+                    Ok(_) => break input,
                     Err(_) => {
                         println!("That date ain't right");
                         continue;
@@ -56,8 +56,6 @@ pub fn get_input(detail: &str, validate: Validate) -> String {
         }
     }
 }
-
-
 
 pub fn print_instructions() {
     println!("## MENU ##");
@@ -72,8 +70,8 @@ pub fn print_instructions() {
 // Takes user inputs and modifys or creates new event
 fn _modify() {}
 
-// Formats the output of the timetable
-pub fn print_format(vec: &Vec<[&Event; 8]>) {
+// print_days of week
+fn print_days_of_week() {
     let string: &str = "-";
     println!("{string:->100}");
 
@@ -99,7 +97,12 @@ pub fn print_format(vec: &Vec<[&Event; 8]>) {
         sat = days_of_week[6],
     );
     println!("{string:->100}");
+}
 
+// Formats the output of the timetable
+pub fn print_format(vec: &Vec<[&Event; 8]>) {
+    let string: &str = "-";
+    print_days_of_week();
     for i in 0..8 {
         for z in 0..3 {
             let mut string: String = String::from("");
@@ -144,6 +147,8 @@ pub fn print_format(vec: &Vec<[&Event; 8]>) {
     }
 }
 
+
+// Returns the time of day for particular event
 fn time_of_day(x: usize) -> String {
     let time_day: [&str; 11] = [
         "07:00am ", "08:00am ", "09:00am ", "10:00am ", "11:00am ", "12:00pm ", "13:00pm ",
@@ -153,7 +158,6 @@ fn time_of_day(x: usize) -> String {
     time_day[x].to_string()
 }
 
-
 #[cfg(test)]
 mod test {
     use std::io::{self, Cursor};
@@ -161,7 +165,7 @@ mod test {
     use crate::{functions::functions::get_input, objects::objects::Validate};
 
     #[test]
-    #[ignore]
+    #[ignore] // test doesnt work
     fn test_get_input() {
         let _mock_input = Cursor::new("pm".as_bytes());
         let mut mock_stdin = io::stdin();

@@ -39,7 +39,7 @@ impl Event {
     pub fn new() -> Self {
         Event {
             day: "  ".to_string(),
-            title: "foxyLowProxy".to_string(),
+            title: "  ".to_string(),
             start: "  ".to_string(),
             start_locale: "  ".to_string(),
             end: "  ".to_string(),
