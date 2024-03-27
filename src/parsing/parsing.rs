@@ -1,18 +1,19 @@
 use crate::{
     errors::errors::{CustomParseError, ParseTime},
-    objects::objects::Event
+    objects::objects::Event,
 };
 
-pub fn _parse_start_end(event: &Event) -> bool {
-    let start = _parse_time(&event.start).unwrap();
-    let end = _parse_time(&event.end).unwrap();
+/// Validate if the start and the end is valid
+pub fn parse_start_end(event: &Event) -> bool {
+    let start = parse_time(&event.start).unwrap();
+    let end = parse_time(&event.end).unwrap();
 
     if event.start_locale.to_lowercase() == "pm" && event.end_locale.to_lowercase() == "am" {
         return false;
     }
 
-    let start_time_in_min = calculate_min_into_day(&start);
-    let end_time_in_min = calculate_min_into_day(&end);
+    let start_time_in_min = calculate_hour_into_min(&start);
+    let end_time_in_min = calculate_hour_into_min(&end);
     if (end_time_in_min - start_time_in_min) > 60 {
         return false;
     }
@@ -21,17 +22,19 @@ pub fn _parse_start_end(event: &Event) -> bool {
     // todo!()
 }
 
-pub fn calculate_min_into_day(time: &Vec<i32>) -> i32 {
+
+/// Calculate in minutes from 00:00 
+pub fn calculate_hour_into_min(time: &Vec<i32>) -> i32 {
     time[0] * 60 + time[1]
 }
 
-// Check if the user input for time ia velid
-pub fn _parse_time<'a>(time: &String) -> Result<Vec<i32>, CustomParseError> {
+/// Check if the user input for time ia valid
+pub fn parse_time<'a>(time: &String) -> Result<Vec<i32>, CustomParseError> {
     if time.len() != 7 {
         return Err(CustomParseError::ParseInt);
     }
+    // time from string "12:00" from "12:00:PM"
     let local_time = &time[..5];
-    println!("{:#?}", local_time);
     let local_time: Vec<&str> = local_time.split(":").to_owned().collect();
 
     let hour: i32 = match local_time[0].parse::<i32>() {
@@ -53,19 +56,19 @@ pub fn _parse_time<'a>(time: &String) -> Result<Vec<i32>, CustomParseError> {
     };
     let locale = &time[5..].into();
     println!("Locale {}", locale);
-    if !_parse_locale(&locale) {
+    if !parse_locale(&locale) {
         return Err(CustomParseError::ParseTime(ParseTime::ParseLocale));
     };
 
     if hour < 13 && min < 60 {
-
         Ok(vec![hour, min])
     } else {
         Err(CustomParseError::ParseInt)
     }
 }
 
-pub fn _parse_locale(locale: &String) -> bool {
+/// Check if the user input for local time is correct
+pub fn parse_locale(locale: &String) -> bool {
     if locale.to_lowercase() == "pm".to_string() || locale.to_lowercase() == "am".to_string() {
         true
     } else {
@@ -73,7 +76,9 @@ pub fn _parse_locale(locale: &String) -> bool {
     }
 }
 
-pub fn _parse_title(title: &String) -> bool {
+
+/// Check if the title is of right length
+pub fn parse_title(title: &String) -> bool {
     if title == "" || title.len() < 3 {
         false
     } else {
@@ -83,15 +88,15 @@ pub fn _parse_title(title: &String) -> bool {
 
 #[cfg(test)]
 mod test {
-    use crate::parsing::parsing::{_parse_locale, _parse_time, _parse_title};
+    use crate::parsing::parsing::{parse_locale, parse_time, parse_title};
 
     #[test]
     fn test_locale() {
         let locale = String::from("am");
         let locale_1 = String::from("PM");
 
-        assert_eq!(true, _parse_locale(&locale));
-        assert_eq!(true, _parse_locale(&locale_1));
+        assert_eq!(true, parse_locale(&locale));
+        assert_eq!(true, parse_locale(&locale_1));
     }
 
     #[test]
@@ -100,15 +105,15 @@ mod test {
         let title_1: String = "Hello".to_string();
         let title_2: String = "Wue".to_string();
 
-        assert_eq!(false, _parse_title(&title));
-        assert_eq!(true, _parse_title(&title_1));
-        assert_eq!(true, _parse_title(&title_2));
+        assert_eq!(false, parse_title(&title));
+        assert_eq!(true, parse_title(&title_1));
+        assert_eq!(true, parse_title(&title_2));
     }
 
     #[test]
     fn parse_time_test() {
         let time = String::from("01:30PM");
 
-        assert_eq!(_parse_time(&time), Ok(vec![1, 30]))
+        assert_eq!(parse_time(&time), Ok(vec![1, 30]))
     }
 }

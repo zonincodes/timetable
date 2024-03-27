@@ -3,7 +3,7 @@
 use std::io;
 
 use crate::{
-     objects::objects::{Event, Validate}, parsing::parsing::{_parse_time, _parse_title}
+     objects::objects::{Event, Validate}, parsing::parsing::{parse_time, parse_title}
 };
 
 pub fn get_input(detail: &str, validate: Validate) -> String {
@@ -18,7 +18,7 @@ pub fn get_input(detail: &str, validate: Validate) -> String {
         
         match validate {
             Validate::Day => {
-                if _parse_title(&input) {
+                if parse_title(&input) {
                     break input;
                 } else {
                     println!("Wrong Day, enter correct day");
@@ -27,7 +27,7 @@ pub fn get_input(detail: &str, validate: Validate) -> String {
             }
            
             Validate::Title => {
-                if _parse_title(&input) {
+                if parse_title(&input) {
                     break input;
                 } else {
                     println!("Title Length` too short");
@@ -36,7 +36,7 @@ pub fn get_input(detail: &str, validate: Validate) -> String {
             }
 
             Validate::Time => {
-                let time = _parse_time(&input);
+                let time = parse_time(&input);
                 match time {
                     Ok(_) => break input,
                     Err(_) => {

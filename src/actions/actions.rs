@@ -74,8 +74,9 @@ fn _handle_user_option(input: &i32) {
 pub fn print_instructions() {
     println!("{:*>30}", "*");
     println!("           MENU");
+    println!("      Choose option");
+
     println!("{:*>30}", "*");
-    println!("Choose option");
     println!("1>> Show Time Table");
     println!("2>> Schedule Event");
     println!("3>> Update Event");

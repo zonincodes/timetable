@@ -1,12 +1,15 @@
-use crate::functions::functions::get_input;
+use crate::{functions::functions::get_input, parsing::parsing::parse_start_end};
 
 
+/// Validates Sections of the input
 pub enum Validate {
     Day,
     Title,
     Time,
 }
 
+
+///# `Event` store the event
 #[derive(Debug, Clone)]
 pub struct Event {
     pub day: String,
@@ -19,20 +22,24 @@ pub struct Event {
 }
 
 impl Event {
-    // Takes user inputs and returns a vector
+    /// Edits a bare metal event and updates the fields from user 
     pub fn get_event_shedule(&mut self) {
-        // Vector containing an event
-        let input: String = get_input("Enter Day Of Week: More than 3 Letters", Validate::Day);
+      // Get day input `["Sunday", "Monday", ...]`
+        let input: String = get_input("Enter Day Of Week: `Sunday/Monday/.../..` Letters", Validate::Day);
         self.day = input;
+        // Gets the `title for event`
         let input: String = get_input("Enter Event Title: More than 3 Letters", Validate::Title);
         self.title = input;
+        // Gets the `start time` for event`
         let input: String = get_input("Enter Start time! format: 01:00PM", Validate::Time);
         self.start = input;
+        // Gets the `end time` for event`
         let input: String = get_input("Enter End time! format: 02:00PM", Validate::Time);
         self.end = input;
         
     }
 
+    /// Creates an empty event
     pub fn new() -> Self {
         Event {
             day: "  ".to_string(),
@@ -45,8 +52,11 @@ impl Event {
         }
     }
 
+    /// Validate's if the event is correct
     pub fn validate(&mut self) {
-        self.is_valid = true;
+        if parse_start_end(&self) {
+            self.is_valid = true;
+        }
     }
 }
 
