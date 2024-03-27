@@ -107,7 +107,7 @@ mod test {
 
     #[test]
     fn parse_time_test() {
-        let time = String::from("01:30");
+        let time = String::from("01:30PM");
 
         assert_eq!(_parse_time(&time), Ok(vec![1, 30]))
     }
