@@ -3,7 +3,8 @@
 use std::io;
 
 use crate::{
-     objects::objects::{Event, Validate}, parsing::parsing::{parse_time, parse_title}
+    objects::objects::{Event, Validate},
+    parsing::parsing::{parse_time, parse_title},
 };
 
 pub fn get_input(detail: &str, validate: Validate) -> String {
@@ -15,7 +16,7 @@ pub fn get_input(detail: &str, validate: Validate) -> String {
             .read_line(&mut input)
             .expect("Failed to read line");
         let input = input.trim().to_string();
-        
+
         match validate {
             Validate::Day => {
                 if parse_title(&input) {
@@ -25,7 +26,7 @@ pub fn get_input(detail: &str, validate: Validate) -> String {
                     continue;
                 }
             }
-           
+
             Validate::Title => {
                 if parse_title(&input) {
                     break input;
@@ -48,8 +49,6 @@ pub fn get_input(detail: &str, validate: Validate) -> String {
         }
     }
 }
-
-
 
 // Takes user inputs and modifys or creates new event
 fn _modify() {}
@@ -129,9 +128,7 @@ pub fn print_format(vec: &Vec<[&Event; 8]>) {
         }
         println!("{string:->100}");
     }
-
 }
-
 
 // Returns the time of day for particular event
 fn time_of_day(x: usize) -> String {
@@ -147,7 +144,6 @@ fn time_of_day(x: usize) -> String {
 mod test {
     use std::io::{self, Cursor};
 
-
     #[test]
     #[ignore] // test doesnt work
     fn test_get_input() {
@@ -156,7 +152,6 @@ mod test {
 
         // swap the actual stdin with mock input
         let _ = std::mem::swap(&mut io::stdin(), &mut mock_stdin);
-
 
         // restore the actual stdIn
         let _ = std::mem::swap(&mut io::stdin(), &mut mock_stdin);

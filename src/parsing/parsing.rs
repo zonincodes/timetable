@@ -1,5 +1,5 @@
 use crate::{
-    errors::errors::{CustomParseError, ParseTime},
+    errors::errors::{TimeTableError, ParseTime},
     objects::objects::Event,
 };
 
@@ -29,9 +29,9 @@ pub fn calculate_hour_into_min(time: &Vec<i32>) -> i32 {
 }
 
 /// Check if the user input for time ia valid
-pub fn parse_time<'a>(time: &String) -> Result<Vec<i32>, CustomParseError> {
+pub fn parse_time<'a>(time: &String) -> Result<Vec<i32>, TimeTableError> {
     if time.len() != 7 {
-        return Err(CustomParseError::ParseInt);
+        return Err(TimeTableError::ParseInt);
     }
     // time from string "12:00" from "12:00:PM"
     let local_time = &time[..5];
@@ -40,7 +40,7 @@ pub fn parse_time<'a>(time: &String) -> Result<Vec<i32>, CustomParseError> {
     let hour: i32 = match local_time[0].parse::<i32>() {
         Ok(val) => val,
         Err(_) => {
-            return Err(CustomParseError::ParseTime(ParseTime::ParseHour(
+            return Err(TimeTableError::ParseTime(ParseTime::ParseHour(
                 String::from("Wrong hour input"),
             )))
         }
@@ -49,7 +49,7 @@ pub fn parse_time<'a>(time: &String) -> Result<Vec<i32>, CustomParseError> {
     let min: i32 = match local_time[1].parse::<i32>() {
         Ok(val) => val,
         Err(_) => {
-            return Err(CustomParseError::ParseTime(ParseTime::ParseMin(
+            return Err(TimeTableError::ParseTime(ParseTime::ParseMin(
                 "Wrong min".into(),
             )))
         }
@@ -57,13 +57,13 @@ pub fn parse_time<'a>(time: &String) -> Result<Vec<i32>, CustomParseError> {
     let locale = &time[5..].into();
     println!("Locale {}", locale);
     if !parse_locale(&locale) {
-        return Err(CustomParseError::ParseTime(ParseTime::ParseLocale));
+        return Err(TimeTableError::ParseTime(ParseTime::ParseLocale));
     };
 
     if hour < 13 && min < 60 {
         Ok(vec![hour, min])
     } else {
-        Err(CustomParseError::ParseInt)
+        Err(TimeTableError::ParseInt)
     }
 }
 

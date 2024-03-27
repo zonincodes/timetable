@@ -1,9 +1,12 @@
+/// Error
 #[derive(PartialEq, Debug)]
-pub enum CustomParseError {
+pub enum TimeTableError {
     ParseInt,
-    ParseTime(ParseTime)
+    ParseTime(ParseTime),
 }
 
+
+/// Errors for time parsing
 #[derive(PartialEq, Debug)]
 pub enum ParseTime {
     ParseLocale,

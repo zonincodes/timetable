@@ -1,13 +1,11 @@
 use crate::{functions::functions::get_input, parsing::parsing::parse_start_end};
 
-
 /// Validates Sections of the input
 pub enum Validate {
     Day,
     Title,
     Time,
 }
-
 
 ///# `Event` store the event
 #[derive(Debug, Clone)]
@@ -22,10 +20,13 @@ pub struct Event {
 }
 
 impl Event {
-    /// Edits a bare metal event and updates the fields from user 
+    /// Edits a bare metal event and updates the fields from user
     pub fn get_event_shedule(&mut self) {
-      // Get day input `["Sunday", "Monday", ...]`
-        let input: String = get_input("Enter Day Of Week: `Sunday/Monday/.../..` Letters", Validate::Day);
+        // Get day input `["Sunday", "Monday", ...]`
+        let input: String = get_input(
+            "Enter Day Of Week: `Sunday/Monday/.../..` Letters",
+            Validate::Day,
+        );
         self.day = input;
         // Gets the `title for event`
         let input: String = get_input("Enter Event Title: More than 3 Letters", Validate::Title);
@@ -36,7 +37,6 @@ impl Event {
         // Gets the `end time` for event`
         let input: String = get_input("Enter End time! format: 02:00PM", Validate::Time);
         self.end = input;
-        
     }
 
     /// Creates an empty event
@@ -59,6 +59,3 @@ impl Event {
         }
     }
 }
-
-
-
